@@ -79,10 +79,11 @@ export default function Testimonials() {
               </div>
 
               {/* Content */}
-              <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+              <p className="text-gray-700 mb-6 italic">&ldquo;{testimonial.content}&rdquo;</p>
 
               {/* Author */}
               <div className="flex items-center gap-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={testimonial.image}
                   alt={testimonial.name}
