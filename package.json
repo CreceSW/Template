@@ -6,7 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:dev": "./scripts/start.sh dev",
+    "docker:prod": "./scripts/start.sh prod",
+    "docker:multi": "./scripts/start.sh multi",
+    "docker:stop": "./scripts/stop.sh",
+    "docker:stop:all": "./scripts/stop.sh all",
+    "docker:restart": "./scripts/restart.sh",
+    "docker:logs": "./scripts/logs.sh",
+    "docker:build": "./scripts/build.sh prod",
+    "docker:clean": "./scripts/clean.sh soft",
+    "docker:clean:hard": "./scripts/clean.sh hard"
   },
   "dependencies": {
     "next": "^14.2.0",

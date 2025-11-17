@@ -1,0 +1,28 @@
+# Docker Compose para PRODUCCIÓN
+# Uso: docker-compose -f docker-compose.prod.yml up -d
+version: '3.8'
+
+services:
+  landing-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    container_name: landing-page-prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: always
+    networks:
+      - landing-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  landing-network:
+    driver: bridge

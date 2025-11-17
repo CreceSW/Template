@@ -1,0 +1,71 @@
+# Docker Compose para MÚLTIPLES LANDING PAGES
+# Orquestación de varios proyectos simultáneamente
+# Uso: docker-compose -f docker-compose.multi.yml up -d
+version: '3.8'
+
+services:
+  # Landing 1 - Proyecto principal (Template)
+  landing-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: landing-1-template
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - PROJECT_NAME=landing-1-template
+    restart: always
+    networks:
+      - multi-landing-network
+
+  # Landing 2 - Cliente A (ejemplo)
+  # Descomenta y duplica este bloque para cada nuevo landing
+  # landing-2:
+  #   build:
+  #     context: ../landing-cliente-a
+  #     dockerfile: Dockerfile
+  #   container_name: landing-2-cliente-a
+  #   ports:
+  #     - "3002:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PROJECT_NAME=landing-cliente-a
+  #   restart: always
+  #   networks:
+  #     - multi-landing-network
+
+  # Landing 3 - Cliente B (ejemplo)
+  # landing-3:
+  #   build:
+  #     context: ../landing-cliente-b
+  #     dockerfile: Dockerfile
+  #   container_name: landing-3-cliente-b
+  #   ports:
+  #     - "3003:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PROJECT_NAME=landing-cliente-b
+  #   restart: always
+  #   networks:
+  #     - multi-landing-network
+
+  # Nginx Reverse Proxy (opcional - para dominios personalizados)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - landing-1
+    restart: always
+    networks:
+      - multi-landing-network
+
+networks:
+  multi-landing-network:
+    driver: bridge

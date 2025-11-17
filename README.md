@@ -38,8 +38,265 @@ El template incluye todas las secciones esenciales para un landing page profesio
 - **Lenguaje**: TypeScript 5.4.0
 - **Estilos**: Tailwind CSS 3.4.0
 - **Runtime**: Node.js 20+ LTS
+- **Containerización**: Docker + Docker Compose
+- **Reverse Proxy**: Nginx (para orquestación multi-landing)
 
-## 📦 Instalación
+## 🐳 Docker - Orquestación de Múltiples Landing Pages
+
+Este template incluye configuración completa de Docker para desarrollo, producción y orquestación de múltiples landing pages simultáneamente.
+
+### ¿Por qué Docker?
+
+- ✅ **Orquestar múltiples landings** en un solo servidor
+- ✅ **Aislamiento** entre proyectos
+- ✅ **Reproducibilidad** del entorno
+- ✅ **Escalabilidad** instantánea
+- ✅ **Deploy simplificado**
+
+### Prerrequisitos Docker
+
+- Docker 20+ ([Instalar Docker](https://docs.docker.com/get-docker/))
+- Docker Compose 2+ (incluido con Docker Desktop)
+
+### 🚀 Inicio Rápido con Docker
+
+#### Opción 1: Desarrollo (con Hot Reload)
+
+```bash
+# Levantar entorno de desarrollo
+./scripts/start.sh dev
+# o usando npm
+npm run docker:dev
+
+# Acceder en: http://localhost:3000
+# Los cambios en el código se reflejan automáticamente
+```
+
+#### Opción 2: Producción
+
+```bash
+# Levantar entorno de producción optimizado
+./scripts/start.sh prod
+# o usando npm
+npm run docker:prod
+
+# Acceder en: http://localhost:3000
+```
+
+#### Opción 3: Múltiples Landing Pages (Orquestación)
+
+```bash
+# Levantar múltiples landings + Nginx reverse proxy
+./scripts/start.sh multi
+# o usando npm
+npm run docker:multi
+
+# Acceder en:
+# - Landing 1: http://localhost:3001
+# - Nginx Proxy: http://localhost:80
+```
+
+### 📝 Scripts Disponibles
+
+Todos los scripts están en la carpeta `scripts/` y también disponibles vía `npm run`:
+
+| Script | npm run | Descripción |
+|--------|---------|-------------|
+| `./scripts/start.sh dev` | `npm run docker:dev` | Levantar desarrollo |
+| `./scripts/start.sh prod` | `npm run docker:prod` | Levantar producción |
+| `./scripts/start.sh multi` | `npm run docker:multi` | Levantar multi-landing |
+| `./scripts/stop.sh` | `npm run docker:stop` | Detener contenedores |
+| `./scripts/stop.sh all` | `npm run docker:stop:all` | Detener todos |
+| `./scripts/restart.sh` | `npm run docker:restart` | Reiniciar contenedores |
+| `./scripts/logs.sh` | `npm run docker:logs` | Ver logs en tiempo real |
+| `./scripts/build.sh` | `npm run docker:build` | Build de imágenes |
+| `./scripts/clean.sh soft` | `npm run docker:clean` | Limpiar contenedores |
+| `./scripts/clean.sh hard` | `npm run docker:clean:hard` | Limpieza completa |
+
+### 🏗️ Estructura Docker
+
+```
+Template/
+├── Dockerfile              # Producción multi-stage optimizado
+├── Dockerfile.dev          # Desarrollo con hot reload
+├── .dockerignore           # Archivos excluidos del build
+├── docker-compose.yml      # Configuración de desarrollo
+├── docker-compose.prod.yml # Configuración de producción
+├── docker-compose.multi.yml # Orquestación multi-landing
+├── nginx/
+│   ├── nginx.conf          # Reverse proxy config
+│   ├── ssl/                # Certificados SSL
+│   └── README.md           # Docs de Nginx
+└── scripts/
+    ├── start.sh            # Levantar contenedores
+    ├── stop.sh             # Detener contenedores
+    ├── restart.sh          # Reiniciar contenedores
+    ├── logs.sh             # Ver logs
+    ├── build.sh            # Build de imágenes
+    └── clean.sh            # Limpieza de Docker
+```
+
+### 🌐 Configuración Multi-Landing
+
+Para orquestar múltiples landing pages para diferentes clientes:
+
+1. **Clonar template para cada cliente:**
+
+```bash
+# Estructura recomendada
+projects/
+├── landing-template/       # Este repo (template base)
+├── landing-cliente-a/      # Copia personalizada cliente A
+├── landing-cliente-b/      # Copia personalizada cliente B
+└── landing-cliente-c/      # Copia personalizada cliente C
+```
+
+2. **Editar `docker-compose.multi.yml`:**
+
+```yaml
+services:
+  landing-2:
+    build:
+      context: ../landing-cliente-a
+      dockerfile: Dockerfile
+    container_name: landing-2-cliente-a
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - PROJECT_NAME=landing-cliente-a
+    restart: always
+    networks:
+      - multi-landing-network
+```
+
+3. **Configurar dominios en Nginx:**
+
+Edita `nginx/nginx.conf`:
+
+```nginx
+server {
+    listen 80;
+    server_name cliente-a.com www.cliente-a.com;
+
+    location / {
+        proxy_pass http://landing-2:3000;
+        # ... configuración de proxy
+    }
+}
+```
+
+4. **Levantar orquestación:**
+
+```bash
+./scripts/start.sh multi
+```
+
+### 🔒 SSL/HTTPS con Let's Encrypt
+
+Para habilitar HTTPS en tus landing pages:
+
+```bash
+# 1. Instalar certbot
+sudo apt-get install certbot python3-certbot-nginx
+
+# 2. Obtener certificado
+sudo certbot --nginx -d midominio.com -d www.midominio.com
+
+# 3. Copiar certificados a nginx/ssl/
+mkdir -p nginx/ssl
+sudo cp /etc/letsencrypt/live/midominio.com/fullchain.pem nginx/ssl/midominio.com.crt
+sudo cp /etc/letsencrypt/live/midominio.com/privkey.pem nginx/ssl/midominio.com.key
+
+# 4. Descomentar sección SSL en nginx/nginx.conf
+
+# 5. Reiniciar Nginx
+docker-compose -f docker-compose.multi.yml restart nginx
+```
+
+Ver `nginx/README.md` para más detalles.
+
+### 📊 Monitoring y Logs
+
+```bash
+# Ver logs de todos los contenedores
+./scripts/logs.sh dev
+
+# Ver logs de un contenedor específico
+./scripts/logs.sh multi landing-1
+
+# Ver estado de contenedores
+docker ps
+
+# Ver uso de recursos
+docker stats
+```
+
+### 🔧 Troubleshooting Docker
+
+#### Puerto ya en uso
+
+```bash
+# Cambiar puerto en docker-compose.yml
+ports:
+  - "3001:3000"  # Usar 3001 en lugar de 3000
+```
+
+#### Reconstruir imágenes desde cero
+
+```bash
+./scripts/build.sh prod
+# o
+docker-compose build --no-cache
+```
+
+#### Ver qué está consumiendo espacio
+
+```bash
+docker system df
+```
+
+#### Limpieza completa
+
+```bash
+./scripts/clean.sh hard
+```
+
+### 🚀 Deploy en Producción
+
+#### Opción 1: VPS con Docker
+
+```bash
+# 1. SSH al servidor
+ssh usuario@tu-servidor.com
+
+# 2. Clonar repositorio
+git clone <tu-repo>
+cd Template
+
+# 3. Levantar producción
+./scripts/start.sh prod
+
+# 4. Configurar dominio en DNS apuntando a tu IP
+# 5. Configurar SSL con Let's Encrypt (ver sección SSL)
+```
+
+#### Opción 2: Vercel (sin Docker)
+
+```bash
+# Vercel maneja la containerización automáticamente
+vercel --prod
+```
+
+### 💡 Ventajas del Stack con Docker
+
+1. **Un servidor, múltiples clientes**: Corre 5-10 landing pages en un VPS de $5/mes
+2. **Actualizaciones sin downtime**: Rolling updates con `docker-compose up -d`
+3. **Escalabilidad**: Agrega más contenedores según demanda
+4. **Backup simplificado**: Backup del código + volumes = restore completo
+5. **Desarrollo = Producción**: Mismo ambiente en todas partes
+
+## 📦 Instalación (Sin Docker)
 
 ### Prerrequisitos
 

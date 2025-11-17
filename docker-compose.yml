@@ -1,0 +1,27 @@
+# Docker Compose para DESARROLLO
+# Uso: docker-compose up -d
+version: '3.8'
+
+services:
+  landing-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: landing-page-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Hot reload - sincronizar código en tiempo real
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    restart: unless-stopped
+    networks:
+      - landing-network
+
+networks:
+  landing-network:
+    driver: bridge
