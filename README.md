@@ -211,7 +211,7 @@ sudo cp /etc/letsencrypt/live/midominio.com/privkey.pem nginx/ssl/midominio.com.
 # 4. Descomentar sección SSL en nginx/nginx.conf
 
 # 5. Reiniciar Nginx
-docker-compose -f docker-compose.multi.yml restart nginx
+docker compose -f docker-compose.multi.yml restart nginx
 ```
 
 Ver `nginx/README.md` para más detalles.
@@ -247,7 +247,7 @@ ports:
 ```bash
 ./scripts/build.sh prod
 # o
-docker-compose build --no-cache
+docker compose build --no-cache
 ```
 
 #### Ver qué está consumiendo espacio
@@ -291,7 +291,7 @@ vercel --prod
 ### 💡 Ventajas del Stack con Docker
 
 1. **Un servidor, múltiples clientes**: Corre 5-10 landing pages en un VPS de $5/mes
-2. **Actualizaciones sin downtime**: Rolling updates con `docker-compose up -d`
+2. **Actualizaciones sin downtime**: Rolling updates con `docker compose up -d`
 3. **Escalabilidad**: Agrega más contenedores según demanda
 4. **Backup simplificado**: Backup del código + volumes = restore completo
 5. **Desarrollo = Producción**: Mismo ambiente en todas partes

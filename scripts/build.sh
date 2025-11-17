@@ -22,19 +22,19 @@ echo -e "${NC}"
 case $MODE in
   dev)
     echo -e "${YELLOW}🏗️  Building imagen de DESARROLLO...${NC}"
-    docker-compose build
+    docker compose build
     echo -e "${GREEN}✅ Imagen de desarrollo construida${NC}"
     ;;
 
   prod)
     echo -e "${YELLOW}🏗️  Building imagen de PRODUCCIÓN...${NC}"
-    docker-compose -f docker-compose.prod.yml build --no-cache
+    docker compose -f docker-compose.prod.yml build --no-cache
     echo -e "${GREEN}✅ Imagen de producción construida${NC}"
     ;;
 
   multi)
     echo -e "${YELLOW}🏗️  Building imágenes MULTI-LANDING...${NC}"
-    docker-compose -f docker-compose.multi.yml build --no-cache
+    docker compose -f docker-compose.multi.yml build --no-cache
     echo -e "${GREEN}✅ Imágenes multi-landing construidas${NC}"
     ;;
 

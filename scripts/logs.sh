@@ -23,27 +23,27 @@ case $MODE in
   dev)
     echo -e "${YELLOW}📋 Mostrando logs de DESARROLLO...${NC}"
     if [ -z "$CONTAINER" ]; then
-      docker-compose logs -f --tail=100
+      docker compose logs -f --tail=100
     else
-      docker-compose logs -f --tail=100 $CONTAINER
+      docker compose logs -f --tail=100 $CONTAINER
     fi
     ;;
 
   prod)
     echo -e "${YELLOW}📋 Mostrando logs de PRODUCCIÓN...${NC}"
     if [ -z "$CONTAINER" ]; then
-      docker-compose -f docker-compose.prod.yml logs -f --tail=100
+      docker compose -f docker-compose.prod.yml logs -f --tail=100
     else
-      docker-compose -f docker-compose.prod.yml logs -f --tail=100 $CONTAINER
+      docker compose -f docker-compose.prod.yml logs -f --tail=100 $CONTAINER
     fi
     ;;
 
   multi)
     echo -e "${YELLOW}📋 Mostrando logs de MULTI-LANDING...${NC}"
     if [ -z "$CONTAINER" ]; then
-      docker-compose -f docker-compose.multi.yml logs -f --tail=100
+      docker compose -f docker-compose.multi.yml logs -f --tail=100
     else
-      docker-compose -f docker-compose.multi.yml logs -f --tail=100 $CONTAINER
+      docker compose -f docker-compose.multi.yml logs -f --tail=100 $CONTAINER
     fi
     ;;
 

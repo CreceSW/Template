@@ -62,7 +62,7 @@ landing-2:
 ### 3. Reiniciar Nginx
 
 ```bash
-docker-compose -f docker-compose.multi.yml restart nginx
+docker compose -f docker-compose.multi.yml restart nginx
 ```
 
 ## SSL/HTTPS con Let's Encrypt
@@ -97,19 +97,19 @@ Descomenta la sección SSL y ajusta las rutas de los certificados.
 ### Ver logs de Nginx
 
 ```bash
-docker-compose -f docker-compose.multi.yml logs nginx
+docker compose -f docker-compose.multi.yml logs nginx
 ```
 
 ### Verificar configuración
 
 ```bash
-docker-compose -f docker-compose.multi.yml exec nginx nginx -t
+docker compose -f docker-compose.multi.yml exec nginx nginx -t
 ```
 
 ### Recargar configuración sin downtime
 
 ```bash
-docker-compose -f docker-compose.multi.yml exec nginx nginx -s reload
+docker compose -f docker-compose.multi.yml exec nginx nginx -s reload
 ```
 
 ## Ejemplo de Configuración Completa

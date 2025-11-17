@@ -26,27 +26,27 @@ MODE=${1:-dev}
 case $MODE in
   dev)
     echo -e "${YELLOW}🛑 Deteniendo entorno de DESARROLLO...${NC}"
-    docker-compose down
+    docker compose down
     echo -e "${GREEN}✅ Contenedor de desarrollo detenido${NC}"
     ;;
 
   prod)
     echo -e "${YELLOW}🛑 Deteniendo entorno de PRODUCCIÓN...${NC}"
-    docker-compose -f docker-compose.prod.yml down
+    docker compose -f docker-compose.prod.yml down
     echo -e "${GREEN}✅ Contenedor de producción detenido${NC}"
     ;;
 
   multi)
     echo -e "${YELLOW}🛑 Deteniendo MÚLTIPLES landing pages...${NC}"
-    docker-compose -f docker-compose.multi.yml down
+    docker compose -f docker-compose.multi.yml down
     echo -e "${GREEN}✅ Contenedores multi-landing detenidos${NC}"
     ;;
 
   all)
     echo -e "${YELLOW}🛑 Deteniendo TODOS los contenedores...${NC}"
-    docker-compose down 2>/dev/null || true
-    docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
-    docker-compose -f docker-compose.multi.yml down 2>/dev/null || true
+    docker compose down 2>/dev/null || true
+    docker compose -f docker-compose.prod.yml down 2>/dev/null || true
+    docker compose -f docker-compose.multi.yml down 2>/dev/null || true
     echo -e "${GREEN}✅ Todos los contenedores detenidos${NC}"
     ;;
 

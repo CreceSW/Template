@@ -26,7 +26,7 @@ MODE=${1:-dev}
 case $MODE in
   dev)
     echo -e "${YELLOW}🚀 Levantando entorno de DESARROLLO...${NC}"
-    docker-compose up -d
+    docker compose up -d
     echo -e "${GREEN}✅ Contenedor de desarrollo iniciado${NC}"
     echo -e "${BLUE}📍 URL: http://localhost:3000${NC}"
     echo -e "${YELLOW}💡 Hot reload habilitado - Los cambios se verán en tiempo real${NC}"
@@ -34,14 +34,14 @@ case $MODE in
 
   prod)
     echo -e "${YELLOW}🚀 Levantando entorno de PRODUCCIÓN...${NC}"
-    docker-compose -f docker-compose.prod.yml up -d --build
+    docker compose -f docker-compose.prod.yml up -d --build
     echo -e "${GREEN}✅ Contenedor de producción iniciado${NC}"
     echo -e "${BLUE}📍 URL: http://localhost:3000${NC}"
     ;;
 
   multi)
     echo -e "${YELLOW}🚀 Levantando MÚLTIPLES landing pages...${NC}"
-    docker-compose -f docker-compose.multi.yml up -d --build
+    docker compose -f docker-compose.multi.yml up -d --build
     echo -e "${GREEN}✅ Contenedores multi-landing iniciados${NC}"
     echo -e "${BLUE}📍 URLs disponibles:${NC}"
     echo -e "  - Landing 1: http://localhost:3001"
