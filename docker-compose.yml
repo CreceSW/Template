@@ -1,6 +1,5 @@
 # Docker Compose para DESARROLLO
-# Uso: docker-compose up -d
-version: '3.8'
+# Uso: docker compose up -d
 
 services:
   landing-dev:

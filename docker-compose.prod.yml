@@ -1,6 +1,5 @@
 # Docker Compose para PRODUCCIÓN
-# Uso: docker-compose -f docker-compose.prod.yml up -d
-version: '3.8'
+# Uso: docker compose -f docker-compose.prod.yml up -d
 
 services:
   landing-prod:

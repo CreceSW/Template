@@ -1,7 +1,6 @@
 # Docker Compose para MÚLTIPLES LANDING PAGES
 # Orquestación de varios proyectos simultáneamente
-# Uso: docker-compose -f docker-compose.multi.yml up -d
-version: '3.8'
+# Uso: docker compose -f docker-compose.multi.yml up -d
 
 services:
   # Landing 1 - Proyecto principal (Template)
