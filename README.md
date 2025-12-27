@@ -10,14 +10,16 @@ Template profesional de landing page estático creado con las tecnologías más 
 
 - ⚡ **Next.js 14+** con App Router
 - 🔷 **TypeScript** para type safety
-- 🎨 **Tailwind CSS** para estilos modernos
+- 🎨 **Tailwind CSS** con sistema de colores personalizable (primary/secondary)
 - 📱 **Responsive Design** (móvil, tablet, escritorio)
-- 🎯 **SEO Optimizado**
+- 🎯 **SEO Completo** (Open Graph, Twitter Cards, Sitemap, robots.txt)
 - 🚀 **Performance optimizado**
 - ♿ **Accesible** (WAI-ARIA)
-- 🎭 **Componentes reutilizables**
-- 📝 **Formulario de contacto** funcional
+- 🎭 **Componentes reutilizables** con zonas de personalización claras
+- 📝 **Formulario de contacto funcional** con API y soporte para Resend
+- 🔤 **Google Fonts** (Inter por defecto, fácil de cambiar)
 - 🌙 **Smooth scroll** entre secciones
+- 🖼️ **Favicon SVG** personalizable
 
 ## 📋 Secciones Incluidas
 
@@ -359,9 +361,13 @@ npm run lint
 ```
 Template/
 ├── app/
-│   ├── globals.css          # Estilos globales + Tailwind
-│   ├── layout.tsx            # Layout principal
-│   └── page.tsx              # Página principal
+│   ├── api/
+│   │   └── contact/
+│   │       └── route.ts      # API de formulario de contacto
+│   ├── globals.css           # Estilos globales + Tailwind
+│   ├── layout.tsx            # Layout principal + SEO + Google Fonts
+│   ├── page.tsx              # Página principal
+│   └── sitemap.ts            # Sitemap dinámico para SEO
 ├── components/
 │   ├── Navbar.tsx            # Barra de navegación
 │   ├── Hero.tsx              # Sección hero
@@ -369,13 +375,17 @@ Template/
 │   ├── About.tsx             # Sobre nosotros
 │   ├── Services.tsx          # Servicios y precios
 │   ├── Testimonials.tsx      # Testimonios
-│   ├── CTA.tsx               # Call to action + Formulario
+│   ├── CTA.tsx               # Call to action + Formulario funcional
 │   └── Footer.tsx            # Pie de página
-├── public/                   # Archivos estáticos
+├── public/
+│   ├── icon.svg              # Favicon SVG personalizable
+│   ├── robots.txt            # Configuración para buscadores
+│   └── ASSETS-README.md      # Guía de assets e iconos
+├── .env.example              # Variables de entorno requeridas
 ├── .gitignore
 ├── next.config.mjs
 ├── package.json
-├── tailwind.config.ts
+├── tailwind.config.ts        # Colores primary/secondary centralizados
 ├── tsconfig.json
 └── README.md
 ```
@@ -384,32 +394,49 @@ Template/
 
 ### 1. Cambiar colores principales
 
+El template usa un sistema de colores semántico (`primary`/`secondary`) que permite cambiar toda la paleta desde un solo archivo.
+
 Edita `tailwind.config.ts` para cambiar los colores del tema:
 
 ```typescript
-theme: {
-  extend: {
-    colors: {
-      primary: '#3b82f6',  // Cambiar color principal
-      secondary: '#8b5cf6', // Cambiar color secundario
-    },
-  },
-},
+import colors from "tailwindcss/colors";
+
+// En la sección theme.extend.colors:
+colors: {
+  primary: colors.blue,      // ← Cambiar aquí (ej: colors.emerald, colors.rose)
+  secondary: colors.indigo,  // ← Color secundario/acentos
+}
 ```
 
-O simplemente busca y reemplaza en todos los archivos:
-- `blue-600` por tu color preferido
-- `blue-50` por el tono claro correspondiente
+**Colores disponibles de Tailwind:**
+`slate`, `gray`, `zinc`, `neutral`, `stone`, `red`, `orange`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`
+
+Los componentes usan clases como `bg-primary-600`, `text-primary-50`, `border-secondary-500` que automáticamente adoptarán tus colores elegidos.
 
 ### 2. Modificar textos y contenido
 
-Todos los textos están directamente en los componentes para facilitar la personalización:
+Cada componente tiene una **zona de personalización** claramente marcada al inicio del archivo:
 
-- **Marca/Logo**: `components/Navbar.tsx` y `components/Footer.tsx`
-- **Título principal**: `components/Hero.tsx`
-- **Servicios y precios**: `components/Services.tsx`
-- **Características**: `components/Features.tsx`
-- **Testimonios**: `components/Testimonials.tsx`
+```typescript
+// ════════════════════════════════════════════════════════════════════════════════
+// 📝 PERSONALIZACIÓN - EDITAR AQUÍ
+// ════════════════════════════════════════════════════════════════════════════════
+const BRAND = { name: "TuMarca", ... };
+const TEXTS = { title: "...", subtitle: "..." };
+```
+
+**Archivos a personalizar:**
+
+| Componente | Qué editar |
+|------------|------------|
+| `Navbar.tsx` | Logo, enlaces de navegación |
+| `Hero.tsx` | Título, subtítulo, CTAs, estadísticas |
+| `Features.tsx` | Lista de características con iconos |
+| `About.tsx` | Descripción de la empresa, puntos clave |
+| `Services.tsx` | Paquetes, precios, características |
+| `Testimonials.tsx` | Testimonios de clientes |
+| `CTA.tsx` | Textos del formulario de contacto |
+| `Footer.tsx` | Enlaces, redes sociales, copyright |
 
 ### 3. Agregar imágenes
 
@@ -421,30 +448,43 @@ Coloca tus imágenes en la carpeta `public/` y refiérelas así:
 
 ### 4. Configurar formulario de contacto
 
-El formulario en `components/CTA.tsx` actualmente solo muestra un mensaje de éxito. Para hacerlo funcional:
+El formulario ya está **completamente funcional** con una API integrada en `app/api/contact/route.ts`.
 
-**Opción A: Usar un servicio de email (Recomendado)**
+**Modo desarrollo (por defecto):**
+Los datos del formulario se muestran en la consola del servidor.
+
+**Modo producción con emails reales:**
+
+1. **Crear cuenta en [Resend](https://resend.com)** (gratis hasta 3,000 emails/mes)
+
+2. **Obtener API Key** desde el dashboard de Resend
+
+3. **Configurar variables de entorno:**
+
+```bash
+# Copiar el archivo de ejemplo
+cp .env.example .env.local
+
+# Editar .env.local con tus valores
+RESEND_API_KEY=re_xxxxxxxxxxxx
+CONTACT_EMAIL_TO=tu@email.com
+```
+
+4. **Instalar Resend:**
 
 ```bash
 npm install resend
 ```
 
-**Opción B: Crear una API Route en Next.js**
+5. **Reiniciar el servidor** y el formulario enviará emails reales.
 
-Crea `app/api/contact/route.ts`:
+**Campos del formulario:**
+- Nombre completo
+- Email
+- Teléfono (opcional)
+- Mensaje
 
-```typescript
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
-  const data = await request.json();
-
-  // Aquí integras con tu servicio de email
-  // Ejemplo: Resend, SendGrid, etc.
-
-  return NextResponse.json({ success: true });
-}
-```
+Los emails llegan con formato profesional incluyendo todos los datos del cliente.
 
 ### 5. Cambiar fuente
 
